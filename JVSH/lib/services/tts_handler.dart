@@ -6,7 +6,7 @@ class TtsHandler {
   TtsHandler() {
     _flutterTts.setLanguage("pl-PL");
     _flutterTts.setSpeechRate(0.5);
-    _flutterTts.setVolume(1.0);
+    _flutterTts.setVolume(5.0);
     _flutterTts.setPitch(5.0);
   }
 
