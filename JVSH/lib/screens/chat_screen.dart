@@ -15,7 +15,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool isSpeaking = false;
-
   late final TtsHandler ttsHandler;
 
   @override
@@ -24,7 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
     ttsHandler = TtsHandler()
       ..onSpeakingStart = () {
         setState(() {
-          isSpeaking = true; // Rozpoczęcie animacji po inicjalizacji
+          isSpeaking = true;
         });
       }
       ..onSpeakingDone = () {
@@ -32,11 +31,6 @@ class _ChatScreenState extends State<ChatScreen> {
           isSpeaking = false;
         });
       };
-
-    // Tylko do testów - usunąć później
-    setState(() {
-      isSpeaking = true;
-    });
   }
 
   @override
@@ -51,34 +45,51 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/background.png"),
+            image: AssetImage("assets/background2.png"),
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final chats = ref.watch(chatsProvider).reversed.toList();
-                  return ListView.builder(
-                    reverse: true,
-                    itemCount: chats.length,
-                    itemBuilder: (context, index) => ChatItem(
-                      text: chats[index].message,
-                      isMe: chats[index].isMe,
-                    ),
-                  );
-                },
+            // List of messages
+            Consumer(
+              builder: (context, ref, child) {
+                final chats = ref.watch(chatsProvider).reversed.toList();
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: chats.length,
+                  itemBuilder: (context, index) => Column(
+                    children: [
+                      ChatItem(
+                        text: chats[index].message,
+                        isMe: chats[index].isMe,
+                      ),
+                      SizedBox(
+                          height: 285), // Dodaje przestrzeń pod każdym ChatItem
+                    ],
+                  ),
+                );
+              },
+            ),
+
+            // Speaking indicator
+            if (isSpeaking)
+              Align(
+                alignment: Alignment.topCenter,
+                child: const AnimatedSpeakingIndicator(isSpeaking: true),
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(12.0),
-              child: TextAndVoiceField(),
-            ),
-            if (isSpeaking) const AnimatedSpeakingIndicator(isSpeaking: true),
-            const SizedBox(
-              height: 10,
+
+            // Input field
+            Align(
+              alignment:
+                  Alignment.center, // Position at the center of the screen
+              child: Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height *
+                      0.753, // Adjust the value to bring the field up
+                ),
+                child: TextAndVoiceField(),
+              ),
             ),
           ],
         ),

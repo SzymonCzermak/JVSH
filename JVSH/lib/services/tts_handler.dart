@@ -21,18 +21,18 @@ class TtsHandler {
         .setPitch(0.5); // Ustawiono bardziej naturalną wysokość tonu
 
     // Pobierz dostępne głosy i wybierz męski głos
-    var voices = await _flutterTts.getVoices;
-    var maleVoice = voices.firstWhere(
-        (voice) =>
-            voice["gender"] == "male" && voice["locale"].startsWith("pl-"),
-        orElse: () => null);
+    // var voices = await _flutterTts.getVoices;
+    // var maleVoice = voices.firstWhere(
+    //     (voice) =>
+    //         voice["gender"] == "male" && voice["locale"].startsWith("pl-"),
+    //     orElse: () => null);
 
-    if (maleVoice != null) {
-      await _flutterTts.setVoice(maleVoice);
-    } else {
-      print(
-          "Nie znaleziono męskiego głosu dla języka polskiego, używam domyślnego.");
-    }
+    // if (maleVoice != null) {
+    //   await _flutterTts.setVoice(maleVoice);
+    // } else {
+    //   print(
+    //       "Nie znaleziono męskiego głosu dla języka polskiego, używam domyślnego.");
+    // }
 
     // Dodanie obsługi callbacków
     _flutterTts.setStartHandler(() {

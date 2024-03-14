@@ -42,34 +42,40 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie zawartości
       children: [
-        Expanded(
-          child: TextField(
-            controller: _messageController,
-            onChanged: (value) {
-              value.isNotEmpty
-                  ? setInputMode(InputMode.text)
-                  : setInputMode(InputMode.voice);
-            },
-            cursorColor: Theme.of(context).colorScheme.onPrimary,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-                borderRadius: BorderRadius.circular(
-                  12,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 06,
-        ),
+        // Flexible(
+        //   child: Container(
+        //     padding: EdgeInsets.symmetric(
+        //         horizontal: 20), // Dodanie paddingu poziomego
+        //     constraints: BoxConstraints(
+        //       maxWidth: 600, // Maksymalna szerokość TextField
+        //     ),
+        //     child: TextField(
+        //       controller: _messageController,
+        //       onChanged: (value) {
+        //         setState(() {
+        //           value.isNotEmpty
+        //               ? _inputMode = InputMode.text
+        //               : _inputMode = InputMode.voice;
+        //         });
+        //       },
+        //       cursorColor: Theme.of(context).colorScheme.onPrimary,
+        //       decoration: InputDecoration(
+        //         hintText: "Type a message", // Przykładowy tekst zastępczy
+        //         border: OutlineInputBorder(
+        //           borderRadius: BorderRadius.circular(12),
+        //         ),
+        //         focusedBorder: OutlineInputBorder(
+        //           borderSide: BorderSide(
+        //             color: Theme.of(context).colorScheme.onPrimary,
+        //           ),
+        //           borderRadius: BorderRadius.circular(12),
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         ToggleButton(
           isListening: _isListening,
           isReplying: _isReplying,
@@ -80,7 +86,7 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
             sendTextMessage(message);
           },
           sendVoiceMessage: sendVoiceMessage,
-        )
+        ),
       ],
     );
   }

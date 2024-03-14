@@ -24,7 +24,7 @@ class _AnimatedSpeakingIndicatorState extends State<AnimatedSpeakingIndicator>
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 10),
     )..repeat(reverse: true);
     _sizeAnimation = Tween<double>(begin: 24.0, end: 32.0).animate(
       CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
@@ -44,24 +44,24 @@ class _AnimatedSpeakingIndicatorState extends State<AnimatedSpeakingIndicator>
     }
   }
 
-  // @override
-  // void didUpdateWidget(AnimatedSpeakingIndicator oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   if (widget.isSpeaking) {
-  //     _animationController!.repeat(reverse: true);
-  //     _lottieAnimationController.repeat(); // Kontynuacja animacji Lottie
-  //   } else {
-  //     _animationController!.stop();
-  //     _lottieAnimationController.stop(); // Zatrzymanie animacji Lottie
-  //   }
-  // }
+  @override
+  void didUpdateWidget(AnimatedSpeakingIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isSpeaking) {
+      _animationController!.repeat(reverse: true);
+      _lottieAnimationController.repeat(); // Kontynuacja animacji Lottie
+    } else {
+      _animationController!.stop();
+      _lottieAnimationController.stop(); // Zatrzymanie animacji Lottie
+    }
+  }
 
-  // @override
-  // void dispose() {
-  //   _animationController?.dispose();
-  //   _lottieAnimationController.dispose(); // Usunięcie kontrolera Lottie
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _animationController?.dispose();
+    _lottieAnimationController.dispose(); // Usunięcie kontrolera Lottie
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

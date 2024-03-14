@@ -32,7 +32,11 @@ class _ToggleButtonState extends State<ToggleButton> {
         backgroundColor: Theme.of(context).colorScheme.secondary,
         foregroundColor: Theme.of(context).colorScheme.onSecondary,
         shape: const CircleBorder(),
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(
+            10), // Zmniejszony padding, aby powiększyć przycisk
+        // Możesz również dostosować wielkość przycisku poprzez zmianę minimalnych wymiarów:
+        minimumSize: Size(
+            60, 60), // Ustaw minimalny rozmiar przycisku, aby go powiększyć
       ),
       onPressed: widget._isReplying
           ? null
@@ -45,6 +49,7 @@ class _ToggleButtonState extends State<ToggleButton> {
             : widget._isListening
                 ? Icons.mic_off
                 : Icons.mic,
+        size: 170, // Zwiększony rozmiar ikony
       ),
     );
   }
