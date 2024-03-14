@@ -69,7 +69,7 @@ class _AnimatedSpeakingIndicatorState extends State<AnimatedSpeakingIndicator>
       children: [
         Center(
             child: Lottie.asset(
-          "assets/animations/talk.json",
+          "assets/talk.json",
           repeat: true,
           width: 250,
           height: 250,

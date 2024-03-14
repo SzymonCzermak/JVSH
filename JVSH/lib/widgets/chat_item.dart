@@ -23,11 +23,10 @@ class ChatItem extends StatelessWidget {
           children: [
             if (!isMe) ProfileContainer(isMe: isMe),
             if (!isMe)
-              const SizedBox(
-                  width: 10), // Zmniejszony rozmiar dla lepszego wyświetlania
+              const SizedBox(width: 40), // Odstęp miedzy ikoną a dymkiem
             Container(
               padding: const EdgeInsets.all(
-                  15), // Zmniejszony padding dla lepszego dopasowania
+                  20), // Zmniejszony padding dla lepszego dopasowania
               constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width *
                     0.75, // Zwiększony maksymalny rozmiar dla lepszego dopasowania
@@ -52,7 +51,7 @@ class ChatItem extends StatelessWidget {
             ),
             if (isMe)
               const SizedBox(
-                  width: 10), // Zmniejszony rozmiar dla lepszego wyświetlania
+                  width: 40), // Zmniejszony rozmiar dla lepszego wyświetlania
             if (isMe) ProfileContainer(isMe: isMe),
           ],
         ),

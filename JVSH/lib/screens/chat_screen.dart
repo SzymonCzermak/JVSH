@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import '../providers/chats_provider.dart';
 import '../widgets/chat_item.dart';
 import '../widgets/animated_speaking_indicator.dart'; // Upewnij się, że importujesz ten plik
@@ -51,6 +52,8 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Stack(
           children: [
+            Center(child: Lottie.asset('assets/talk.json')),
+
             // List of messages
             Consumer(
               builder: (context, ref, child) {
@@ -64,22 +67,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: chats[index].message,
                         isMe: chats[index].isMe,
                       ),
-                      SizedBox(
-                          height: 285), // Dodaje przestrzeń pod każdym ChatItem
+                      SizedBox(height: 285),
                     ],
                   ),
                 );
               },
             ),
 
-            // Speaking indicator
-            if (isSpeaking)
-              Align(
-                alignment: Alignment.topCenter,
-                child: const AnimatedSpeakingIndicator(isSpeaking: true),
-              ),
-
-            // Input field
             Align(
               alignment:
                   Alignment.center, // Position at the center of the screen
