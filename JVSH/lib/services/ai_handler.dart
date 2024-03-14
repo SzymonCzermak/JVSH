@@ -3,8 +3,7 @@ import 'package:gpt_flutter/services/tts_handler.dart';
 
 class AIHandler {
   final _openAI = OpenAI.instance.build(
-    token:
-        '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', // Zastąp 'twoj-klucz-api' swoim faktycznym kluczem API
+    token: 'apikey', // Zastąp 'twoj-klucz-api' swoim faktycznym kluczem API
     baseOption: HttpSetup(
       receiveTimeout: const Duration(seconds: 60),
       connectTimeout: const Duration(seconds: 60),
