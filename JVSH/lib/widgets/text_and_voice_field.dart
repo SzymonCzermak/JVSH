@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/chat_model.dart';
 import '../providers/chats_provider.dart';
@@ -42,53 +43,79 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center, // Wyśrodkowanie zawartości
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Flexible(
-        //   child: Container(
-        //     padding: EdgeInsets.symmetric(
-        //         horizontal: 20), // Dodanie paddingu poziomego
-        //     constraints: BoxConstraints(
-        //       maxWidth: 600, // Maksymalna szerokość TextField
-        //     ),
-        //     child: TextField(
-        //       controller: _messageController,
-        //       onChanged: (value) {
-        //         setState(() {
-        //           value.isNotEmpty
-        //               ? _inputMode = InputMode.text
-        //               : _inputMode = InputMode.voice;
-        //         });
-        //       },
-        //       cursorColor: Theme.of(context).colorScheme.onPrimary,
-        //       decoration: InputDecoration(
-        //         hintText: "Type a message", // Przykładowy tekst zastępczy
-        //         border: OutlineInputBorder(
-        //           borderRadius: BorderRadius.circular(12),
-        //         ),
-        //         focusedBorder: OutlineInputBorder(
-        //           borderSide: BorderSide(
-        //             color: Theme.of(context).colorScheme.onPrimary,
-        //           ),
-        //           borderRadius: BorderRadius.circular(12),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
+        Flexible(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            constraints: BoxConstraints(maxWidth: 600),
+            child: Focus(
+              autofocus: true,
+              onKey: (FocusNode node, RawKeyEvent event) {
+                if (event is RawKeyDownEvent) {
+                  if (event.logicalKey == LogicalKeyboardKey.enter) {
+                    event.isControlPressed
+                        ? _messageController.text += "\n"
+                        : _sendMessage();
+                    return KeyEventResult.handled;
+                  } else if (event.logicalKey == LogicalKeyboardKey.keyP) {
+                    if (_isListening) {
+                      sendVoiceMessage(); // Stop listening and send message
+                    } else {
+                      sendVoiceMessage(); // Start listening
+                    }
+                    return KeyEventResult.handled;
+                  }
+                }
+                return KeyEventResult.ignored;
+              },
+              child: TextField(
+                controller: _messageController,
+                minLines: 1,
+                maxLines: 5,
+                onChanged: (value) {
+                  setState(() {
+                    value.isNotEmpty
+                        ? _inputMode = InputMode.text
+                        : _inputMode = InputMode.voice;
+                  });
+                },
+                cursorColor: Theme.of(context).colorScheme.onPrimary,
+                decoration: InputDecoration(
+                  hintText: "Type a message",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         ToggleButton(
           isListening: _isListening,
           isReplying: _isReplying,
           inputMode: _inputMode,
           sendTextMessage: () {
-            final message = _messageController.text;
-            _messageController.clear();
-            sendTextMessage(message);
+            _sendMessage();
           },
           sendVoiceMessage: sendVoiceMessage,
         ),
       ],
     );
+  }
+
+  void _sendMessage() {
+    final message = _messageController.text.trim();
+    if (message.isNotEmpty) {
+      sendTextMessage(message);
+      _messageController.clear();
+    }
   }
 
   void setInputMode(InputMode inputMode) {
@@ -109,7 +136,7 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
       setListeningState(true);
       final result = await voiceHandler.startListening();
       setListeningState(false);
-      sendTextMessage(result);
+      if (result != null) sendTextMessage(result);
     }
   }
 
