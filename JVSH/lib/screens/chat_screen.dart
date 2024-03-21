@@ -46,13 +46,26 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/background2.png"),
+            image: AssetImage("assets/ALVF.png"),
             fit: BoxFit.cover,
           ),
         ),
         child: Stack(
           children: [
-            Center(child: Lottie.asset('assets/talk.json')),
+            Align(
+              alignment: Alignment(0, -1.42),
+              child: SizedBox(
+                  width: 650, // Szerokość animacji
+                  height: 650, // Wysokość animacji
+                    child: Lottie.asset('assets/Alien.json'), // Ta animacja będzie teraz mniejsza.
+  ),
+),
+            Align(
+              alignment: Alignment(0, 0),
+              child: Lottie.asset('assets/answer.json'), // Ta animacja będzie na górze
+
+            ),
+            
 
             // List of messages
             Consumer(
@@ -67,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         text: chats[index].message,
                         isMe: chats[index].isMe,
                       ),
-                      SizedBox(height: 285),
+                      SizedBox(height: 250),
                     ],
                   ),
                 );
