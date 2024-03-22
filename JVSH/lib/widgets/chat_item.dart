@@ -23,21 +23,31 @@ class ChatItem extends StatelessWidget {
           maxWidth: MediaQuery.of(context).size.width * 0.9,
         ),
         decoration: BoxDecoration(
-          color: isMe
-              ? Theme.of(context).colorScheme.primary
-              : Color(0x0),
+          color:
+              isMe ? Theme.of(context).colorScheme.primary : Color(0x004F46CA),
           borderRadius: BorderRadius.circular(15),
         ),
         child: Wrap(
+          alignment:
+              WrapAlignment.center, // Dodane wyrównanie dzieci Wrap do środka
           children: [
             Text(
               text,
+              textAlign: TextAlign.center, // Dodane wyśrodkowanie tekstu
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontWeight: FontWeight.bold, // Pogrubiona czcionka
                 fontSize: 18, // Większa czcionka
+                shadows: <Shadow>[
+                  Shadow(
+                    offset: Offset(1.1, 1.1), // Przesunięcie cienia
+                    blurRadius: 3.0, // Rozmycie cienia
+                    color: Color.fromARGB(
+                        255, 0, 0, 0), // Kolor cienia, tutaj czarny
+                  ),
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -46,13 +56,15 @@ class ChatItem extends StatelessWidget {
     // Logika dla wyświetlania pytania, jeśli istnieje
     final questionWidget = question != null && !isMe
         ? Container(
-            margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            margin:
+                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             padding: const EdgeInsets.all(16),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 0, 123, 255), // Unikalny kolor dla pytania
+              color: const Color.fromARGB(
+                  255, 0, 123, 255), // Unikalny kolor dla pytania
               borderRadius: BorderRadius.circular(15),
             ),
             child: Text(
@@ -68,12 +80,12 @@ class ChatItem extends StatelessWidget {
 
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
-        if (!isMe) 
-        answerWidget,
+        if (!isMe) answerWidget,
         questionWidget,
-        SizedBox(height: 50), // Zwiększony odstęp między pytaniem a odpowiedzią
+        SizedBox(height: 50),
       ],
     );
   }
