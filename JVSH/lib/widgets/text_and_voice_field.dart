@@ -42,73 +42,52 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            constraints: BoxConstraints(maxWidth: 600),
-            child: Focus(
-              autofocus: true,
-              onKey: (FocusNode node, RawKeyEvent event) {
-                if (event is RawKeyDownEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.enter) {
-                    event.isControlPressed
-                        ? _messageController.text += "\n"
-                        : _sendMessage();
-                    return KeyEventResult.handled;
-                  } else if (event.logicalKey == LogicalKeyboardKey.keyP) {
-                    if (_isListening) {
-                      sendVoiceMessage(); // Stop listening and send message
-                    } else {
-                      sendVoiceMessage(); // Start listening
-                    }
-                    return KeyEventResult.handled;
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Flexible(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 80),
+          constraints: BoxConstraints(maxWidth: 0),
+          child: Focus(
+            autofocus: true,
+            onKey: (FocusNode node, RawKeyEvent event) {
+              if (event is RawKeyDownEvent) {
+                if (event.logicalKey == LogicalKeyboardKey.enter) {
+                  if (event.isControlPressed) {
+                    // Handle control enter logic, if needed
+                  } else {
+                    _sendMessage(); // Handle the send message logic
                   }
+                  return KeyEventResult.handled;
+                } else if (event.logicalKey == LogicalKeyboardKey.keyP) {
+                  // Handle other key logic, if needed
+                  if (_isListening) {
+                    sendVoiceMessage(); // Stop listening and send message
+                  } else {
+                    sendVoiceMessage(); // Start listening
+                  }
+                  return KeyEventResult.handled;
                 }
-                return KeyEventResult.ignored;
-              },
-              child: TextField(
-                controller: _messageController,
-                minLines: 1,
-                maxLines: 5,
-                onChanged: (value) {
-                  setState(() {
-                    value.isNotEmpty
-                        ? _inputMode = InputMode.text
-                        : _inputMode = InputMode.voice;
-                  });
-                },
-                cursorColor: Theme.of(context).colorScheme.onPrimary,
-                decoration: InputDecoration(
-                  hintText: "Type a message",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
+              }
+              return KeyEventResult.ignored;
+            },
+            child: Container(), // Placeholder for the child of Focus
           ),
         ),
-        ToggleButton(
-          isListening: _isListening,
-          isReplying: _isReplying,
-          inputMode: _inputMode,
-          sendTextMessage: () {
-            _sendMessage();
-          },
-          sendVoiceMessage: sendVoiceMessage,
-        ),
-      ],
-    );
-  }
+      ),
+      ToggleButton(
+        isListening: _isListening,
+        isReplying: _isReplying,
+        inputMode: _inputMode,
+        sendTextMessage: () {
+          _sendMessage(); // Make sure this function does not rely on the text field
+        },
+        sendVoiceMessage: sendVoiceMessage,
+      ),
+    ],
+  );
+}
 
   void _sendMessage() {
     final message = _messageController.text.trim();
@@ -143,7 +122,7 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
   void sendTextMessage(String message) async {
     setReplyingState(true);
     addToChatList(message, true, DateTime.now().toString());
-    addToChatList('Typing...', false, 'typing');
+    addToChatList('Myśle...', false, 'typing');
     setInputMode(InputMode.voice);
     final aiResponse = await _openAI.getResponse(message);
     removeTyping();

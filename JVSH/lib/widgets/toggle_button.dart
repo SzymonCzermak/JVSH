@@ -49,7 +49,7 @@ class _ToggleButtonState extends State<ToggleButton> {
             : widget._isListening
                 ? Icons.mic_off
                 : Icons.mic,
-        size: 170, // Zwiększony rozmiar ikony
+        size: 120, // Zwiększony rozmiar ikony
       ),
     );
   }

@@ -46,22 +46,29 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/ALVF.png"),
+            image: AssetImage("assets/FINAL.png"),
             fit: BoxFit.cover,
           ),
         ),
         child: Stack(
           children: [
             Align(
-              alignment: Alignment(0, -1.42),
+              alignment: Alignment(0, -1.3),
               child: SizedBox(
                   width: 650, // Szerokość animacji
                   height: 650, // Wysokość animacji
                     child: Lottie.asset('assets/Alien.json'), // Ta animacja będzie teraz mniejsza.
-  ),
-),
+                    ),
+              ),
+
             Align(
-              alignment: Alignment(0, 0),
+              alignment: Alignment(0, 0.15),
+              child: Lottie.asset('assets/textbar.json'), // Ta animacja będzie na górze
+
+            ),
+                
+            Align(
+              alignment: Alignment(0, 0.92),
               child: Lottie.asset('assets/answer.json'), // Ta animacja będzie na górze
 
             ),
@@ -69,23 +76,33 @@ class _ChatScreenState extends State<ChatScreen> {
 
             // List of messages
             Consumer(
-              builder: (context, ref, child) {
-                final chats = ref.watch(chatsProvider).reversed.toList();
-                return ListView.builder(
-                  reverse: true,
-                  itemCount: chats.length,
-                  itemBuilder: (context, index) => Column(
-                    children: [
-                      ChatItem(
-                        text: chats[index].message,
-                        isMe: chats[index].isMe,
-                      ),
-                      SizedBox(height: 250),
-                    ],
-                  ),
-                );
-              },
-            ),
+  builder: (context, ref, child) {
+    final chats = ref.watch(chatsProvider).reversed.toList();
+    if (chats.isNotEmpty) {
+      // Make sure there is at least one message
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 100.0), // Adjust the padding as needed
+        child: ListView.builder(
+          reverse: true,
+          itemCount: 1, // Show only one item
+          itemBuilder: (context, index) => Column(
+            children: [
+              ChatItem(
+                text: chats[0].message, // Always show the latest message
+                isMe: chats[0].isMe,
+              ),
+              SizedBox(height: 250.0), // Adjust the height as needed
+              // You can add more widgets here if needed
+            ],
+          ),
+        ),
+      );
+    } else {
+      // If there are no messages, you could return an empty container or some placeholder
+      return Container(); // or any other widget to indicate the list is empty
+    }
+  },
+),
 
             Align(
               alignment:
