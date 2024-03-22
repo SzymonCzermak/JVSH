@@ -60,7 +60,7 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
                     _sendMessage(); // Handle the send message logic
                   }
                   return KeyEventResult.handled;
-                } else if (event.logicalKey == LogicalKeyboardKey.keyP) {
+                } else if (event.logicalKey == LogicalKeyboardKey.space) {
                   // Handle other key logic, if needed
                   if (_isListening) {
                     sendVoiceMessage(); // Stop listening and send message
