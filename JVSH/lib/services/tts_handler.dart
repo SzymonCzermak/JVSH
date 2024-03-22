@@ -15,10 +15,10 @@ class TtsHandler {
   void _initTts() async {
     await _flutterTts.setLanguage("pl-PL-Wavenet-B");
     await _flutterTts
-        .setSpeechRate(1.0); // Zmieniono na bardziej naturalne tempo
+        .setSpeechRate(1.9); // Zmieniono na bardziej naturalne tempo
     await _flutterTts.setVolume(1.0); // Ustawiono maksymalną zalecaną głośność
     await _flutterTts
-        .setPitch(0.5); // Ustawiono bardziej naturalną wysokość tonu
+        .setPitch(0.7 ); // Ustawiono bardziej naturalną wysokość tonu
 
     // Pobierz dostępne głosy i wybierz męski głos
     // var voices = await _flutterTts.getVoices;
