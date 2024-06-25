@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import '../providers/chats_provider.dart';
 import '../widgets/chat_item.dart';
-import '../widgets/animated_speaking_indicator.dart'; // Upewnij się, że importujesz ten plik
 import '../services/tts_handler.dart'; // Upewnij się, że importujesz ten plik
 import '../widgets/text_and_voice_field.dart';
 

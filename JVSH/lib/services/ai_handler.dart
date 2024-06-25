@@ -3,7 +3,7 @@ import 'package:gpt_flutter/services/tts_handler.dart';
 
 class AIHandler {
   final OpenAI _openAI = OpenAI.instance.build(
-    token: 'apikey',
+    token: 'api',
     baseOption: HttpSetup(
       receiveTimeout: const Duration(seconds: 60),
       connectTimeout: const Duration(seconds: 60),
@@ -14,41 +14,44 @@ class AIHandler {
   final List<Map<String, String>> conversation = [];
 
   Future<String> getResponse(String message) async {
-  try {
-    String context = "Opowiadaj tylko na tematy związane z filmem, teatrem, sztuką, kinem. Na inne pytania nie odpowiadaj.";
-    String fullMessage = context + message;
+    try {
+      String context = "Opowiadaj tylko na tematy związane z filmem, teatrem, sztuką, kinem. Odpowiadaj zwięźle i na temat.";
+      conversation.add({"role": "user", "content": message});
 
-    conversation.add({"role": "user", "content": message});
+      final request = ChatCompleteText(
+        messages: [
+          {"role": "system", "content": context},
+          ...conversation.map((msg) => {"role": msg["role"]!, "content": msg["content"]!}).toList(),
+        ],
+        maxToken: 50, // Zmniejszona liczba tokenów
+        model: "gpt-4",
+      );
 
-    final request = ChatCompleteText(
-        messages: conversation,
-        maxToken: 200,
-        model: kChatGptTurbo0301Model);
+      final response = await _openAI.onChatCompletion(request: request);
+      if (response != null && response.choices.isNotEmpty) {
+        String textResponse = response.choices[0].message.content.trim();
 
-    final response = await _openAI.onChatCompletion(request: request);
-    if (response != null && response.choices.isNotEmpty) {
-      String textResponse = response.choices[0].message.content.trim();
+        // Możesz tutaj dodać logikę weryfikującą związek odpowiedzi z filmem, teatrem, sztuką, kinem
+        // Na przykład sprawdzając kluczowe słowa lub frazy w odpowiedzi
 
-      // Możesz tutaj dodać logikę weryfikującą związek odpowiedzi z filmem, teatrem, sztuką, kinem
-      // Na przykład sprawdzając kluczowe słowa lub frazy w odpowiedzi
+        textResponse = _limitResponseToThreeSentences(textResponse);
 
-      textResponse = _limitResponseToThreeSentences(textResponse);
+        conversation.add({"role": "assistant", "content": textResponse});
 
-      conversation.add({"role": "assistant", "content": textResponse});
+        _ttsHandler.speak(textResponse);
+        return textResponse;
+      }
 
-      _ttsHandler.speak(textResponse);
-      return textResponse;
+      return 'Nie udało się uzyskać odpowiedzi.';
+    } catch (e) {
+      print('Error: $e');
+      return 'Proszę powtórz.';
     }
-
-    return 'Nie udało się uzyskać odpowiedzi.';
-  } catch (e) {
-    return 'Prosze Powtórz.';
   }
-}
 
   String _limitResponseToThreeSentences(String response) {
     var sentences = response.split(RegExp(r'[.!?]')).where((sentence) => sentence.trim().isNotEmpty).toList();
-    return sentences.take(2).join('. ') + (sentences.length > 2 ? '.' : '');
+    return sentences.take(3).join('. ') + (sentences.length > 3 ? '.' : '');
   }
 
   void dispose() {
