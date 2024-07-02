@@ -56,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: SizedBox(
                   width: 650, // Szerokość animacji
                   height: 650, // Wysokość animacji
-                    child: Lottie.asset('assets/Alien.json'), // Ta animacja będzie teraz mniejsza.
+                    child: Image.asset('assets/Robotka_trans.gif'), // Ta animacja będzie teraz mniejsza.
                     ),
               ),
 
