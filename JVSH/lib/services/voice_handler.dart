@@ -42,4 +42,3 @@ class VoiceHandler {
   SpeechToText get speechToText => _speechToText;
   bool get isEnabled => _speechEnabled;
 }
-
