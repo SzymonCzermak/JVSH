@@ -7,6 +7,7 @@ class ToggleButton extends StatefulWidget {
   final InputMode _inputMode;
   final bool _isReplying;
   final bool _isListening;
+
   const ToggleButton({
     super.key,
     required InputMode inputMode,
@@ -34,7 +35,6 @@ class _ToggleButtonState extends State<ToggleButton> {
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(
             10), // Zmniejszony padding, aby powiększyć przycisk
-        // Możesz również dostosować wielkość przycisku poprzez zmianę minimalnych wymiarów:
         minimumSize: Size(
             60, 60), // Ustaw minimalny rozmiar przycisku, aby go powiększyć
       ),
@@ -43,13 +43,37 @@ class _ToggleButtonState extends State<ToggleButton> {
           : widget._inputMode == InputMode.text
               ? widget._sendTextMessage
               : widget._sendVoiceMessage,
-      child: Icon(
-        widget._inputMode == InputMode.text
-            ? Icons.send
-            : widget._isListening
-                ? Icons.mic_off
-                : Icons.mic,
-        size: 120, // Zwiększony rozmiar ikony
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          color: Color.fromARGB(169, 60, 1, 116),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
+          ],
+          border: Border.all(
+            color: Color.fromARGB(
+                255, 202, 54, 21), // Możesz zmienić kolor ramki tutaj
+            width: 4,
+          ),
+        ),
+        child: Text(
+          widget._inputMode == InputMode.text
+              ? 'Wyślij wiadomość'
+              : widget._isListening
+                  ? 'Powiedz pytanie i naciśnij przycisk ponownie'
+                  : 'Naciśnij przycisk i zadaj pytanie',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 36,
+            color: Colors.black,
+            fontFamily: 'BungeeSpice', // Ustawienie czcionki
+          ),
+        ),
       ),
     );
   }

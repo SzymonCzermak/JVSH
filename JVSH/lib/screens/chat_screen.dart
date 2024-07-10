@@ -65,7 +65,7 @@ class _ChatScreenState extends State<ChatScreen> {
             Positioned(
               left: 250, // Centruje poziomo animację
               bottom:
-                  200, // Ustawia animację na określonej wysokości (-1.3 * wysokość animacji)
+                  450, // Ustawia animację na określonej wysokości (-1.3 * wysokość animacji)
               child: SizedBox(
                 width: 650, // Szerokość animacji
                 height: 650, // Wysokość animacji
@@ -79,17 +79,17 @@ class _ChatScreenState extends State<ChatScreen> {
             //   right: 0,
             //   child: Lottie.asset('assets/textbar.json'),
             // ),
-            Positioned(
-              left: 215, // Centruje poziomo animację
-              top:
-                  1355, // Ustawia animację na określonej wysokości (-1.3 * wysokość animacji)
-              child: SizedBox(
-                width: 650, // Szerokość animacji
-                height: 650, // Wysokość animacji
-                child: Lottie.asset(
-                    'assets/answer.json'), // Ta animacja będzie teraz mniejsza.
-              ),
-            ),
+            // Positioned(
+            //   left: 215, // Centruje poziomo animację
+            //   top:
+            //       1355, // Ustawia animację na określonej wysokości (-1.3 * wysokość animacji)
+            //   child: SizedBox(
+            //     width: 650, // Szerokość animacji
+            //     height: 650, // Wysokość animacji
+            //     child: Lottie.asset(
+            //         'assets/answer.json'), // Ta animacja będzie teraz mniejsza.
+            //   ),
+            // ),
             Consumer(
               builder: (context, ref, child) {
                 final chats = ref.watch(chatsProvider).reversed.toList();

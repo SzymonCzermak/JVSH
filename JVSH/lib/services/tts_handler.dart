@@ -16,9 +16,9 @@ class TtsHandler {
   void _initTts() async {
     await _flutterTts.setLanguage("pl-PL");
     await _flutterTts
-        .setSpeechRate(1.0); // Slightly slower can sound more natural
+        .setSpeechRate(0.5); // Slightly slower can sound more natural
     await _flutterTts.setVolume(1.0);
-    await _flutterTts.setPitch(1.0); // Adjust pitch for better clarity
+    await _flutterTts.setPitch(0.7); // Adjust pitch for better clarity
 
     _flutterTts.setStartHandler(() {
       onSpeakingStart?.call();

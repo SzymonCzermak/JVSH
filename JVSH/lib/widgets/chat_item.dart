@@ -72,7 +72,7 @@ class ChatItem extends StatelessWidget {
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontWeight: FontWeight.bold, // Pogrubiona czcionka
-                fontSize: 18, // Większa czcionka
+                fontSize: 24, // Większa czcionka
               ),
             ),
           )
