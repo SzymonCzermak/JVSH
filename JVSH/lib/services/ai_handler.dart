@@ -29,7 +29,7 @@ class AIHandler {
                     (msg) => {"role": msg["role"]!, "content": msg["content"]!})
                 .toList(),
           ],
-          maxToken: 50,
+          maxToken: 100,
           model: "gpt-4",
         );
 

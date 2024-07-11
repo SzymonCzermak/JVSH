@@ -1,6 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter_tts/flutter_tts.dart';
+import 'dart:js' as js;
 
 class TtsHandler {
   final FlutterTts _flutterTts = FlutterTts();
@@ -14,58 +14,64 @@ class TtsHandler {
   }
 
   void _initTts() async {
-    await _flutterTts.setLanguage("pl-PL");
-    await _flutterTts
-        .setSpeechRate(0.5); // Slightly slower can sound more natural
-    await _flutterTts.setVolume(1.0);
-    await _flutterTts.setPitch(0.7); // Adjust pitch for better clarity
+    try {
+      await _flutterTts.setLanguage("pl-PL");
+      await _flutterTts
+          .setSpeechRate(1.0); // Slightly slower can sound more natural
+      await _flutterTts.setVolume(1.0);
+      await _flutterTts.setPitch(0.7); // Adjust pitch for better clarity
 
-    _flutterTts.setStartHandler(() {
-      onSpeakingStart?.call();
-    });
+      _flutterTts.setStartHandler(() {
+        onSpeakingStart?.call();
+      });
 
-    _flutterTts.setCompletionHandler(() {
-      onSpeakingDone?.call();
-    });
+      _flutterTts.setCompletionHandler(() {
+        onSpeakingDone?.call();
+      });
 
-    _flutterTts.setErrorHandler((message) {
-      print("Wystąpił błąd w TTS: $message");
-    });
+      _flutterTts.setErrorHandler((message) {
+        print("Wystąpił błąd w TTS: $message");
+      });
 
-    List<dynamic> voices = await _flutterTts.getVoices;
-    _polishVoices = voices
-        .where((voice) => voice['locale'].toString().startsWith('pl-'))
-        .toList();
+      List<dynamic> voices = await _flutterTts.getVoices;
+      _polishVoices = voices
+          .where((voice) => voice['locale'].toString().startsWith('pl-'))
+          .toList();
 
-    var zosiaVoice = _polishVoices
-        .firstWhere((voice) => voice['name'] == 'Zosia', orElse: () => null);
-    if (zosiaVoice != null) {
-      await _flutterTts.setVoice(zosiaVoice);
-      print("Ustawiono głos Zosia: $zosiaVoice");
-    } else {
-      // If Zosia is not found, try to find another female voice
-      var femaleVoice = _polishVoices.firstWhere(
-          (voice) =>
-              voice['name'].toString().contains('fem') ||
-              voice['gender'] == 'female',
-          orElse: () => null);
-      if (femaleVoice != null) {
-        await _flutterTts.setVoice(femaleVoice);
-        print("Ustawiono żeński głos: $femaleVoice");
-      } else {
-        print("Nie znaleziono żeńskiego głosu.");
+      print("Dostępne polskie głosy:");
+      for (var voice in _polishVoices) {
+        print(voice);
       }
-    }
 
-    _polishVoices.forEach((voice) {
-      print("Głos dostępny: $voice");
-    });
+      var paulinaVoice = _polishVoices.firstWhere(
+        (voice) => voice['name'] == 'Microsoft Paulina - Polish (Poland)',
+        orElse: () => null,
+      );
+
+      if (paulinaVoice != null) {
+        await _flutterTts.setVoice(
+            {"name": paulinaVoice['name'], "locale": paulinaVoice['locale']});
+        print("Ustawiono głos Paulina: $paulinaVoice");
+      } else {
+        print("Nie znaleziono głosu Paulina. Używam Web Speech API.");
+      }
+    } catch (e) {
+      print("Wystąpił wyjątek podczas inicjalizacji TTS: $e");
+    }
   }
 
   Future<void> speak(String message) async {
     if (message.isNotEmpty) {
       onSpeakingStart?.call();
-      await _flutterTts.speak(message);
+      if (_polishVoices.any(
+          (voice) => voice['name'] == 'Microsoft Paulina - Polish (Poland)')) {
+        print("Używam głosu Paulina do mowy.");
+        await _flutterTts.speak(message);
+      } else {
+        print("Używam Web Speech API do mowy.");
+        js.context.callMethod('speakWithWebSpeechAPI', [message]);
+      }
+      onSpeakingDone?.call();
     }
   }
 
