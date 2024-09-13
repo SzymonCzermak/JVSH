@@ -38,6 +38,11 @@ flutter:
     - assets/new/TalkBackground.gif
     - assets/new/Robo_IDE.mp4
     - assets/new/StarTalkLogo.mp4
+    - assets/new/Robo_IDE.webp
+    - assets/new/StarTalkLogo.webp
+    - assets/new/Robo_IDE.webm
+    - assets/new/Robo_IDE_UP.webp
+ 
 
 
   fonts:

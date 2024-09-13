@@ -65,8 +65,8 @@ class _ToggleButtonState extends State<ToggleButton> {
           widget._inputMode == InputMode.text
               ? 'Wyślij wiadomość'
               : widget._isListening
-                  ? 'Powiedz pytanie i naciśnij przycisk ponownie'
-                  : 'Naciśnij przycisk i zadaj pytanie',
+                  ? 'Mów a jak skończysz puść przycisk!'
+                  : 'Przyztrzymaj przycisk i zadaj mi pytanie!',
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 36,

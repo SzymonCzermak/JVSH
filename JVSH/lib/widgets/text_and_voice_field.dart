@@ -52,21 +52,14 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
             child: Focus(
               autofocus: true,
               onKey: (FocusNode node, RawKeyEvent event) {
-                if (event is RawKeyDownEvent) {
-                  if (event.logicalKey == LogicalKeyboardKey.enter) {
-                    if (event.isControlPressed) {
-                      // Handle control enter logic, if needed
-                    } else {
-                      _sendMessage(); // Handle the send message logic
-                    }
+                if (event.logicalKey == LogicalKeyboardKey.numpad5) {
+                  if (event is RawKeyDownEvent && !_isListening) {
+                    // Zacznij nasłuchiwać przy wciśnięciu klawisza
+                    sendVoiceMessage(startListening: true);
                     return KeyEventResult.handled;
-                  } else if (event.logicalKey == LogicalKeyboardKey.numpad5) {
-                    // Obsługa klawisza "5" na klawiaturze numerycznej
-                    if (_isListening) {
-                      sendVoiceMessage(); // Stop listening and send message
-                    } else {
-                      sendVoiceMessage(); // Start listening
-                    }
+                  } else if (event is RawKeyUpEvent && _isListening) {
+                    // Zatrzymaj nasłuchiwać przy puszczeniu klawisza
+                    sendVoiceMessage(startListening: false);
                     return KeyEventResult.handled;
                   }
                 }
@@ -83,7 +76,9 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
           sendTextMessage: () {
             _sendMessage(); // Make sure this function does not rely on the text field
           },
-          sendVoiceMessage: sendVoiceMessage,
+          sendVoiceMessage: () {
+            sendVoiceMessage(startListening: !_isListening);
+          },
         ),
       ],
     );
@@ -103,21 +98,28 @@ class _TextAndVoiceFieldState extends ConsumerState<TextAndVoiceField> {
     });
   }
 
-  void sendVoiceMessage() async {
-    if (!voiceHandler.isEnabled) {
-      print('Not supported');
-      return;
-    }
-    if (voiceHandler.speechToText.isListening) {
-      await voiceHandler.stopListening();
-      setListeningState(false);
-    } else {
-      setListeningState(true);
-      final result = await voiceHandler.startListening();
-      setListeningState(false);
-      if (result != null) sendTextMessage(result);
-    }
+  void sendVoiceMessage({required bool startListening}) async {
+  if (!voiceHandler.isEnabled) {
+    print('Not supported');
+    return;
   }
+
+  if (startListening) {
+    // Rozpocznij nasłuchiwanie
+    setListeningState(true);
+    final recognizedText = await voiceHandler.startListening(); // Nasłuchiwanie i rozpoznawanie tekstu
+    if (recognizedText.isNotEmpty) {
+      sendTextMessage(recognizedText); // Wyślij rozpoznany tekst
+    }
+  } else {
+    // Zatrzymaj nasłuchiwanie
+    await voiceHandler.stopListening();
+    setListeningState(false);
+  }
+}
+
+
+
 
   void sendTextMessage(String message) async {
     setReplyingState(true);
