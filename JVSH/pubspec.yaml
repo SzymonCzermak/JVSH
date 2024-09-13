@@ -17,6 +17,7 @@ dependencies:
   flutter_tts: ^3.8.3
   lottie: ^3.1.0
   video_player: ^2.9.1
+  universal_io: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,8 @@ flutter:
     - assets/new/StarTalkLogoTrans.gif
     - assets/new/TalkBackground.gif
     - assets/new/Robo_IDE.mp4
+    - assets/new/StarTalkLogo.mp4
+
 
   fonts:
     - family: BungeeSpice

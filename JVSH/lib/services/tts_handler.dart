@@ -16,17 +16,18 @@ class TtsHandler {
   void _initTts() async {
     try {
       await _flutterTts.setLanguage("pl-PL");
-      await _flutterTts
-          .setSpeechRate(1.0); // Slightly slower can sound more natural
+      await _flutterTts.setSpeechRate(1.0); // Slightly slower can sound more natural
       await _flutterTts.setVolume(1.0);
       await _flutterTts.setPitch(0.7); // Adjust pitch for better clarity
 
       _flutterTts.setStartHandler(() {
         onSpeakingStart?.call();
+        print("Mowa rozpoczęta");
       });
 
       _flutterTts.setCompletionHandler(() {
         onSpeakingDone?.call();
+        print("Mowa zakończona");
       });
 
       _flutterTts.setErrorHandler((message) {
@@ -62,7 +63,6 @@ class TtsHandler {
 
   Future<void> speak(String message) async {
     if (message.isNotEmpty) {
-      onSpeakingStart?.call();
       if (_polishVoices.any(
           (voice) => voice['name'] == 'Microsoft Paulina - Polish (Poland)')) {
         print("Używam głosu Paulina do mowy.");
@@ -71,12 +71,10 @@ class TtsHandler {
         print("Używam Web Speech API do mowy.");
         js.context.callMethod('speakWithWebSpeechAPI', [message]);
       }
-      onSpeakingDone?.call();
     }
   }
 
   void dispose() {
     _flutterTts.stop();
-    onSpeakingDone?.call();
   }
 }

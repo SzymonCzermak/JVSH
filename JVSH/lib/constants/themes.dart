@@ -14,6 +14,6 @@ final darkTheme = ThemeData.dark().copyWith(
         primary: Colors.blueGrey,
         onPrimary: Colors.white,
         secondary: Colors.blueGrey,
-        onSecondary: Color.fromARGB(255, 91, 217, 255),
+        onSecondary: Color.fromARGB(255, 132, 63, 211),
       ),
 );

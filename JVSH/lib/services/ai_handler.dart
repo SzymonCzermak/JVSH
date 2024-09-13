@@ -3,7 +3,7 @@ import 'package:gpt_flutter/services/tts_handler.dart';
 
 class AIHandler {
   final OpenAI _openAI = OpenAI.instance.build(
-    token: 'Api Keyu',
+    token: 'api',
     baseOption: HttpSetup(
       receiveTimeout: const Duration(seconds: 120),
       connectTimeout: const Duration(seconds: 120),
@@ -17,8 +17,15 @@ class AIHandler {
     int retryCount = 0;
     while (retryCount < 3) {
       try {
-        String context =
-            "Opowiadaj tylko na tematy związane z filmem, teatrem, sztuką, kinem. Odpowiadaj krótko w 2 zdaniach maksymalnie.";
+        // Dodany kontekst, aby zapobiec obraźliwym i nieodpowiednim treściom
+        String context = """
+          Opowiadaj tylko na tematy związane z filmem, teatrem, sztuką, kinem.
+          Odpowiadaj krótko, w 2 zdaniach maksymalnie.
+          Nie używaj obraźliwego języka, wulgaryzmów ani treści pornograficznych, 
+          nieodpowiednich lub obraźliwych. Twoje odpowiedzi muszą być kulturalne, 
+          odpowiednie dla każdej grupy wiekowej.
+        """;
+
         conversation.add({"role": "user", "content": message});
 
         final request = ChatCompleteText(
