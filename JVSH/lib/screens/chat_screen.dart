@@ -4,6 +4,7 @@ import '../providers/chats_provider.dart';
 import '../widgets/chat_item.dart';
 import '../services/tts_handler.dart';
 import '../widgets/text_and_voice_field.dart';
+import '../services/ai_handler.dart'; // Import klasy AIHandler
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -13,42 +14,17 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  bool isSpeaking = false;
-  late final TtsHandler ttsHandler;
-  bool _isControllerInitialized = false;
-  bool _isStarTalkInitialized = false;
+  late final AIHandler _aiHandler; // Instancja AIHandler
 
   @override
   void initState() {
     super.initState();
-
-    // Inicjalizacja głosowego TTS
-    ttsHandler = TtsHandler()
-      ..onSpeakingStart = () {
-        setState(() {
-          isSpeaking = true;
-        });
-      }
-      ..onSpeakingDone = () {
-        setState(() {
-          isSpeaking = false;
-        });
-      };
-
-    // Inicjalizacja zasobów graficznych
-    _initializeGraphics();
-  }
-
-  void _initializeGraphics() {
-    setState(() {
-      _isControllerInitialized = true;
-      _isStarTalkInitialized = true;
-    });
+    _aiHandler = AIHandler();
   }
 
   @override
   void dispose() {
-    ttsHandler.dispose();
+    _aiHandler.dispose();
     super.dispose();
   }
 
@@ -64,81 +40,73 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Stack(
           children: [
-            // Wyświetlanie StarTalk jako obraz
+            // Animacja robotki StarTalk
             Positioned(
               left: 330,
               top: 5,
               child: SizedBox(
                 width: 450,
                 height: 450,
-                child: _isStarTalkInitialized
-                    ? Image.asset('assets/new/StarTalkLogo.webp') // Wyświetlanie obrazu .webp
-                    : Center(child: CircularProgressIndicator()),
+                child: Image.asset('assets/new/StarTalkLogo.webp'),
               ),
             ),
-            // Wyświetlanie Robo_IDE jako obraz
+            // Animacja Robo_IDE
             Positioned(
-  top: 400,
-  left: 200,
-  child: SizedBox(
-    width: 700,
-    height: 700,
-    child: _isControllerInitialized
-        ? InteractiveViewer(
-            minScale: 1.0, // Minimalna skala (domyślna)
-            maxScale: 5.0, // Maksymalna skala
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(50.0),
-                  child: ClipRect(
-                    child: Transform.translate(
-                      offset: Offset(8, 14), // Dostosuj offset, aby przesunąć obraz w dół
-                      child: Transform.scale(
-                        scale: 1.70, // Dostosuj skalę, aby uzyskać efekt powiększenia
-                        child: Stack(
-                          children: [
-                            Image.asset('assets/new/Robo_IDE.webp'),
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 3,
-                                      blurRadius: 5,
-                                      offset: Offset(1, 3),
+              top: 400,
+              left: 200,
+              child: SizedBox(
+                width: 700,
+                height: 700,
+                child: InteractiveViewer(
+                  minScale: 1.0,
+                  maxScale: 5.0,
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: ClipRect(
+                          child: Transform.translate(
+                            offset: Offset(8, 14),
+                            child: Transform.scale(
+                              scale: 1.70,
+                              child: Stack(
+                                children: [
+                                  Image.asset('assets/new/Robo_IDE.webp'),
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.2),
+                                            spreadRadius: 3,
+                                            blurRadius: 5,
+                                            offset: Offset(1, 3),
+                                          ),
+                                        ],
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color.fromARGB(0, 94, 94, 94),
+                                            Color.fromARGB(0, 160, 1, 192).withOpacity(0.3),
+                                          ],
+                                          stops: [0.1, 1.5],
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                        ),
+                                      ),
                                     ),
-                                  ],
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color.fromARGB(0, 94, 94, 94),
-                                      Color.fromARGB(0, 160, 1, 192).withOpacity(0.3), // Zamień kolor na wybrany
-                                    ],
-                                    stops: [0.1, 1.5],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          )
-        : Center(child: CircularProgressIndicator()),
-  ),
-),
-
-
-
-
             // Wyświetlanie czatu
             Consumer(
               builder: (context, ref, child) {
@@ -165,6 +133,37 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
               },
             ),
+            // Pozycjonowanie licznika czasu
+            Positioned(
+  left: 10,
+  bottom: 20, // Ustawienie odpowiedniej pozycji licznika
+  child: _aiHandler.isWaiting
+      ? Container(
+          padding: EdgeInsets.all(8), // Dodanie paddingu
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.5), // Tło dla tekstu z półprzezroczystością
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            'Możesz zadać kolejne pytanie za: ${_aiHandler.remainingSeconds} s',
+            style: TextStyle(
+              fontSize: 300, // Zwiększenie rozmiaru czcionki
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow( // Dodanie cienia do tekstu dla lepszej widoczności
+                  offset: Offset(2, 2),
+                  blurRadius: 3,
+                  color: Colors.black.withOpacity(0.8),
+                ),
+              ],
+            ),
+          ),
+        )
+      : Container(),
+),
+
+            // Pole do wpisywania tekstu
             Align(
               alignment: Alignment.center,
               child: Padding(
@@ -174,7 +173,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextAndVoiceField(),
+                    _aiHandler.isWaiting
+                        ? Container() // Jeśli licznik aktywny, nie wyświetla pola
+                        : TextAndVoiceField(), // Wyświetlanie pola do zadawania pytań, gdy licznik zakończony
                   ],
                 ),
               ),
