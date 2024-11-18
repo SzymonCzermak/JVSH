@@ -27,24 +27,64 @@
 
   <!-- Web Speech API Script -->
   <script>
-    function speakWithWebSpeechAPI(message) {
-      const msg = new SpeechSynthesisUtterance();
-      msg.text = message;
-      msg.lang = 'pl-PL';
+    let availableVoices = [];
 
-      // Znajdź głos "Google polski"
+    // Funkcja ładowania głosów
+    function loadVoices(callback) {
       const voices = window.speechSynthesis.getVoices();
-      const voice = voices.find(voice => voice.name === 'Google polski');
+      if (voices.length !== 0) {
+        availableVoices = voices;
+        console.log('Załadowano głosy:', voices);
+        callback();
+      } else {
+        window.speechSynthesis.addEventListener('voiceschanged', () => {
+          availableVoices = window.speechSynthesis.getVoices();
+          console.log('Głosy załadowane po zdarzeniu voiceschanged:', availableVoices);
+          callback();
+        });
+      }
+    }
 
+    // Funkcja mowy z resetowaniem Web Speech API
+    function speakWithWebSpeechAPI(message) {
+      console.log('Rozpoczęcie mowy:', message);
+
+      // Reset Web Speech API przed rozpoczęciem nowej mowy
+      window.speechSynthesis.cancel();
+      console.log("Zresetowano Web Speech API.");
+
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = 'pl-PL';
+
+      // Wybierz głos
+      const voice = availableVoices.find(v => v.name === 'Google polski') || availableVoices[0];
       if (voice) {
-        msg.voice = voice;
+        utterance.voice = voice;
+        console.log('Ustawiono głos:', voice.name);
+      } else {
+        console.warn('Nie znaleziono odpowiedniego głosu. Mowa może nie działać prawidłowo.');
       }
 
-      window.speechSynthesis.speak(msg);
+      utterance.onstart = () => console.log('Mowa rozpoczęta');
+      utterance.onend = () => console.log('Mowa zakończona');
+      utterance.onerror = (event) => console.error('Błąd mowy:', event.error);
+
+      window.speechSynthesis.speak(utterance);
     }
+
+    // Gwarantuje, że głosy są załadowane przed odtwarzaniem
+    window.addEventListener('load', () => {
+      loadVoices(() => {
+        console.log('Głosy są gotowe do użycia.');
+      });
+    });
   </script>
 </head>
 <body>
+  <button onclick="speakWithWebSpeechAPI('Cześć! Mowa teraz działa poprawnie.')">
+    Kliknij, aby przetestować mowę
+  </button>
+
   <script>
     window.addEventListener('load', function(ev) {
       // Download main.dart.js

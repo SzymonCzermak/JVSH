@@ -15,11 +15,16 @@ class TtsHandler {
   }
 
   Future<void> speak(String message) async {
-    if (message.isNotEmpty) {
-      print("Używam Web Speech API do mowy.");
+  if (message.isNotEmpty) {
+    print("Próba mowy: $message");
+    try {
       js.context.callMethod('speakWithWebSpeechAPI', [message]);
+    } catch (e) {
+      print("Błąd Web Speech API: $e");
     }
   }
+}
+
 
   void dispose() {
     // Ponieważ nie używamy FlutterTts, nie musimy nic zwalniać
